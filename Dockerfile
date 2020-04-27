@@ -16,7 +16,7 @@ LABEL "maintainer"="XTRadio Ops <contact@xtradio.org"
 LABEL "version"="0.1"
 LABEL "description"="XTRadio CDN"
 
-COPY --from=build /src/bin/xtradio-api /bin/cdn
+COPY --from=build /src/bin/cdn /bin/cdn
 
 EXPOSE 10000
 EXPOSE 10001
