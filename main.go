@@ -34,6 +34,8 @@ func publishAPI() {
 
 	metricsServe := mux.NewRouter().StrictSlash(true)
 	metricsServe.Handle("/metrics", promhttp.Handler())
+	metricsServe.HandleFunc("/v1/upload", imgUpload).
+		Methods("POST")
 
 	go func() {
 		log.Fatal(http.ListenAndServe(":10001", metricsServe))

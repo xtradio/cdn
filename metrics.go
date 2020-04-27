@@ -9,6 +9,12 @@ var (
 			Help: "Number of images served.",
 		},
 	)
+	imgUploaded = prometheus.NewCounter(
+		prometheus.CounterOpts{
+			Name: "xtradio_cdn_image_uploaded",
+			Help: "Number of images uploaded.",
+		},
+	)
 	// hdFailures = prometheus.NewCounterVec(
 	// 	prometheus.CounterOpts{
 	// 		Name: "hd_errors_total",
@@ -21,5 +27,6 @@ var (
 func init() {
 	// Metrics have to be registered to be exposed:
 	prometheus.MustRegister(imgServed)
+	prometheus.MustRegister(imgUploaded)
 	// prometheus.MustRegister(hdFailures)
 }
