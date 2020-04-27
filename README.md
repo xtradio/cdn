@@ -10,7 +10,8 @@ XTRadio CDN built with golang for ease of metrics instrumentation.
 
 ## Endpoints
 
-`/tracks/` - Folder to serve the files
+> `:10000/tracks/` - Folder to serve the files
 
-`:10001/metrics` - Metrics endpoint
-`:10001/v1/upload` - Endpoint to upload images with POST request
+> `:10001/metrics` - Metrics endpoint
+
+> `:10001/v1/upload` - Endpoint to upload images with POST request
