@@ -1,5 +1,9 @@
 # cdn
 
-[![Docker Repository on Quay](https://quay.io/repository/xtradio/cdn/status "Docker Repository on Quay")](https://quay.io/repository/xtradio/cdn)
+![Docker Build](https://img.shields.io/docker/cloud/build/xtradio/cdn)
 
-nginx configuration to run a small CDN for images.
+XTRadio CDN built with golang for ease of metrics instrumentation.
+
+## ENV Vars needed
+
+`IMG_FOLDER` - The folder from where we want to serve all the images.
