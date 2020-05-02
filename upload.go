@@ -19,17 +19,22 @@ type FileUploadStatus struct {
 func imgUpload(w http.ResponseWriter, r *http.Request) {
 
 	var data FileUploadStatus
+	data.Response = "ok"
 
 	imgDir, ok := os.LookupEnv("IMG_FOLDER")
 	if ok != true {
-		log.Fatal("Image directory could not be read.")
+		log.Fatal("Image directory could not be read - Please set ENV Variables.")
+		http.Error(w, "Internal error", http.StatusInternalServerError)
+		return
 	}
 
 	var Buf bytes.Buffer
 
 	file, header, err := r.FormFile("file")
 	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		log.Panic(err)
+		return
 	}
 	defer file.Close()
 
@@ -39,13 +44,14 @@ func imgUpload(w http.ResponseWriter, r *http.Request) {
 
 	err = ioutil.WriteFile(filename, Buf.Bytes(), 0644)
 	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		log.Panic(err)
+		return
 	}
 
 	Buf.Reset()
 
 	imgUploaded.Inc()
-	data.Response = "ok"
 	json.NewEncoder(w).Encode(data)
 
 }
