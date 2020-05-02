@@ -32,13 +32,13 @@ func publishAPI() {
 
 	apiRouter.PathPrefix("/tracks/").Handler(http.StripPrefix("/tracks/", cacheControlWrapper(http.FileServer(http.Dir(imgDir)))))
 
-	metricsServe := mux.NewRouter().StrictSlash(true)
-	metricsServe.Handle("/metrics", promhttp.Handler())
-	metricsServe.HandleFunc("/v1/upload", imgUpload).
+	adminServe := mux.NewRouter().StrictSlash(true)
+	adminServe.Handle("/metrics", promhttp.Handler())
+	adminServe.HandleFunc("/v1/upload", imgUpload).
 		Methods("POST")
 
 	go func() {
-		log.Fatal(http.ListenAndServe(":10001", metricsServe))
+		log.Fatal(http.ListenAndServe(":10001", adminServe))
 	}()
 
 	log.Fatal(http.ListenAndServe(":10000", apiRouter))
