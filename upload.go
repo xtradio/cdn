@@ -1,24 +1,26 @@
 package main
 
 import (
-	"bytes"
 	"encoding/json"
-	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
+
+	"github.com/gorilla/mux"
 )
 
 // FileUploadStatus holds the status of the file upload function
 type FileUploadStatus struct {
 	Response string `json:"response"`
+	Filename string `json:"filename"`
 }
 
 func imgUpload(w http.ResponseWriter, r *http.Request) {
 
 	var data FileUploadStatus
+	var filepath string
+
 	data.Response = "ok"
 
 	imgDir, ok := os.LookupEnv("IMG_FOLDER")
@@ -28,30 +30,44 @@ func imgUpload(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var Buf bytes.Buffer
+	fileURL := mux.Vars(r)["imgURL"]
 
-	file, header, err := r.FormFile("file")
+	data.Filename, filepath = generateFilename(imgDir)
+
+	err := downloadFile(filepath, fileURL)
+
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		log.Panic(err)
 		return
 	}
-	defer file.Close()
-
-	filename := fmt.Sprintf("%s/%s", imgDir, header.Filename)
-	// Copy the file data to my buffer
-	io.Copy(&Buf, file)
-
-	err = ioutil.WriteFile(filename, Buf.Bytes(), 0644)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		log.Panic(err)
-		return
-	}
-
-	Buf.Reset()
 
 	imgUploaded.Inc()
 	json.NewEncoder(w).Encode(data)
 
+}
+
+func downloadFile(filepath string, url string) error {
+
+	// Get the data
+	resp, err := http.Get(url)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	// Create the file
+	out, err := os.Create(filepath)
+	if err != nil {
+		return err
+	}
+	defer out.Close()
+
+	// Write the body to file
+	_, err = io.Copy(out, resp.Body)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
