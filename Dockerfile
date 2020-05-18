@@ -2,7 +2,7 @@ FROM golang:1.13.9-alpine AS build
 WORKDIR /src
 COPY . .
 
-RUN apk update && apk add git
+RUN apk update && apk add git ca-certificates
 
 RUN go get -d -v
 
@@ -15,6 +15,8 @@ FROM scratch
 LABEL "maintainer"="XTRadio Ops <contact@xtradio.org"
 LABEL "version"="0.1"
 LABEL "description"="XTRadio CDN"
+
+COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
 COPY --from=build /src/bin/cdn /bin/cdn
 
