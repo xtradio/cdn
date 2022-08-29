@@ -1,6 +1,6 @@
 # cdn
 
-![Docker Build](https://img.shields.io/docker/cloud/build/xtradio/cdn)
+[![Build Status](https://github.com/xtradio/cdn/workflows/build/badge.svg?branch=master)](https://github.com/xtradio/cdn/actions)
 
 XTRadio CDN built with golang for ease of metrics instrumentation.
 

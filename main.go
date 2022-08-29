@@ -17,6 +17,7 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 
 func cacheControlWrapper(h http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Cache-Control", "max-age=2592000") // 30 days
 		h.ServeHTTP(w, r)
 	})
